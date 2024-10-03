@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Amazon FBA & FBM Price Calculator</h1>
+
+        <label for="buyingPrice">Purchase Price (£):</label>
+        <input type="number" id="buyingPrice" step="0.01" placeholder="Enter purchase price" oninput="calculate()">
+
+        <div class="fees-container">
+            <div class="fba-fees">
+                <label for="fbaFees">FBA Fees (£):</label>
+                <input type="number" id="fbaFees" step="0.01" placeholder="Enter FBA fees" oninput="calculate()">
+            </div>
+            <div class="fbm-fees">
+                <label for="fbmFees">Prime Shipping Fees (£):</label>
+                <input type="number" id="fbmFees" step="0.01" placeholder="Enter Prime Shipping fees" oninput="calculate()">
+                <label for="nonPrimeFees">Non-Prime Shipping Fees (£):</label>
+                <input type="number" id="nonPrimeFees" step="0.01" placeholder="Enter Non-Prime Shipping fees" oninput="calculate()">
+            </div>
+        </div>
+
+        <label for="packagingCost">Packaging Cost (£):</label>
+        <input type="number" id="packagingCost" step="0.01" value="0.10" oninput="calculate()">
+
+        <div class="result">
+            <div class="results-container">
+                <div class="box fba-results">
+                    <h3>FBA Results</h3>
+                    <p id="finalPriceFBA1_10"></p>
+                    <p id="finalPriceFBA1_15"></p>
+                    <p id="finalPriceFBA1_20"></p>
+                </div>
+                <div class="box fbm-results">
+                    <h3>FBM Results</h3>
+                    <p id="finalPriceFBM1_10"></p>
+                    <p id="finalPriceFBM1_15"></p>
+                    <p id="finalPriceFBM1_20"></p>
+                </div>
+            </div>
+        </div>
+
+        <button class="clear-button" id="clearButton" onclick="clearFields()">Clear All</button>
+    </div>
+
+    <script>
+        function calculate() {
+            // Get values from input fields
+            const buyingPrice = parseFloat(document.getElementById('buyingPrice').value);
+            const packagingCost = parseFloat(document.getElementById('packagingCost').value) || 0;
+            const fbaFees = parseFloat(document.getElementById('fbaFees').value);
+            const primeFees = parseFloat(document.getElementById('fbmFees').value);
+            const nonPrimeFees = parseFloat(document.getElementById('nonPrimeFees').value);
+
+            // Clear results initially
+            document.getElementById('finalPriceFBA1_10').innerHTML = '';
+            document.getElementById('finalPriceFBA1_15').innerHTML = '';
+            document.getElementById('finalPriceFBA1_20').innerHTML = '';
+            document.getElementById('finalPriceFBM1_10').innerHTML = '';
+            document.getElementById('finalPriceFBM1_15').innerHTML = '';
+            document.getElementById('finalPriceFBM1_20').innerHTML = '';
+
+            // Calculate and display results for FBA if FBA fees are provided
+            if (buyingPrice && fbaFees) {
+                const finalPriceFBA1_10 = ((buyingPrice * 1.10) + fbaFees + packagingCost) / 0.683;
+                const finalPriceFBA1_15 = ((buyingPrice * 1.15) + fbaFees + packagingCost) / 0.683;
+                const finalPriceFBA1_20 = ((buyingPrice * 1.20) + fbaFees + packagingCost) / 0.683;
+
+                document.getElementById('finalPriceFBA1_10').innerHTML = `Price for 10% Markup: £${finalPriceFBA1_10.toFixed(2)}`;
+                document.getElementById('finalPriceFBA1_15').innerHTML = `Price for 15% Markup: £${finalPriceFBA1_15.toFixed(2)}`;
+                document.getElementById('finalPriceFBA1_20').innerHTML = `Price for 20% Markup: £${finalPriceFBA1_20.toFixed(2)}`;
+            }
+
+            // Calculate and display results for Prime Shipping if Prime fees are provided
+            if (buyingPrice && primeFees) {
+                const finalPriceFBM1_10 = ((buyingPrice * 1.10) + primeFees + packagingCost) / 0.683;
+                const finalPriceFBM1_15 = ((buyingPrice * 1.15) + primeFees + packagingCost) / 0.683;
+                const finalPriceFBM1_20 = ((buyingPrice * 1.20) + primeFees + packagingCost) / 0.683;
+
+                document.getElementById('finalPriceFBM1_10').innerHTML = `Price for 10% Markup (Prime): £${finalPriceFBM1_10.toFixed(2)}`;
+                document.getElementById('finalPriceFBM1_15').innerHTML = `Price for 15% Markup (Prime): £${finalPriceFBM1_15.toFixed(2)}`;
+                document.getElementById('finalPriceFBM1_20').innerHTML = `Price for 20% Markup (Prime): £${finalPriceFBM1_20.toFixed(2)}`;
+            }
+
+            // Calculate and display results for Non-Prime Shipping if Non-Prime fees are provided
+            if (buyingPrice && nonPrimeFees) {
+                const finalPriceFBM1_10_nonPrime = ((buyingPrice * 1.10) + nonPrimeFees + packagingCost) / 0.683;
+                const finalPriceFBM1_15_nonPrime = ((buyingPrice * 1.15) + nonPrimeFees + packagingCost) / 0.683;
+                const finalPriceFBM1_20_nonPrime = ((buyingPrice * 1.20) + nonPrimeFees + packagingCost) / 0.683;
+
+                document.getElementById('finalPriceFBM1_10').innerHTML += `<br>Price for 10% Markup (Non-Prime): £${finalPriceFBM1_10_nonPrime.toFixed(2)}`;
+                document.getElementById('finalPriceFBM1_15').innerHTML += `<br>Price for 15% Markup (Non-Prime): £${finalPriceFBM1_15_nonPrime.toFixed(2)}`;
+                document.getElementById('finalPriceFBM1_20').innerHTML += `<br>Price for 20% Markup (Non-Prime): £${finalPriceFBM1_20_nonPrime.toFixed(2)}`;
+            }
+        }
+
+        function clearFields() {
+            document.getElementById('buyingPrice').value = '';
+            document.getElementById('packagingCost').value = '0.10';
+            document.getElementById('fbaFees').value = '';
+            document.getElementById('fbmFees').value = '';
+            document.getElementById('nonPrimeFees').value = '';
+            calculate(); // Call calculate to clear results
+        }
+    </script>
+</body>
+</html>
