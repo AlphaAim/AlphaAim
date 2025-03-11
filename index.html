@@ -3,282 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Price Calculator with Animations</title>
+    <title>AMAZON Price Calculator</title>
     <style>
-        /* Base Styles */
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f8ff;
             margin: 0;
             padding: 0;
+            transition: background-color 0.3s ease;
         }
-
         .container {
-            width: 60%;
-            max-width: 800px;
+            width: 70%;
+            max-width: 700px;
             margin: 50px auto;
             background-color: #ffffff;
-            padding: 20px;
+            padding: 25px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             border-radius: 10px;
-            border: 1px solid #007bff;
-            animation: fadeIn 1s ease-in-out;
+            border: 3px solid #007bff;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
         }
-
+        .container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
+        }
         h1 {
             text-align: center;
             color: #007bff;
             margin-bottom: 20px;
-            animation: slideIn 1s ease-in-out;
+            font-size: 2rem;
+            animation: fadeIn 1s ease-out;
         }
-
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
         label {
             display: block;
             margin: 10px 0 5px;
             font-weight: bold;
+            color: #333;
+            font-size: 1.1rem;
         }
-
         input {
             width: calc(100% - 20px);
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
         }
-
         input:focus {
             border-color: #007bff;
-            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
-            animation: bounceIn 0.5s ease-out;
         }
-
-        .fees-container {
-            display: flex;
-            justify-content: space-between;
-            margin: 20px 0;
-        }
-
-        .fba-fees,
-        .fbm-fees {
-            width: 48%;
-        }
-
-        .box {
-            background-color: #e0f7fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 5px;
-            border-left: 5px solid #007bff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            opacity: 0;
-            animation: appear 0.8s forwards;
-        }
-
-        .box:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .results-container {
+        .result {
+            margin-top: 20px;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 10px;
         }
-
-        .results-left,
-        .results-right {
-            width: 48%;
+        .box {
+            background-color: #e0f7fa;
+            padding: 5px;
+            border-radius: 8px;
+            margin: 2px;
+            border-left: 5px solid #007bff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 45%;
+            font-size: 1rem; /* Reduced font size */
+            animation: bounceIn 2s ease-out;
         }
-
-        h3 {
-            color: #007bff;
-            margin: 0 0 10px;
-        }
-
-        button {
-            width: 100%;
-            padding: 15px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        button:hover {
-            background-color: #218838;
-            transform: scale(1.02);
-        }
-
-        .clear-button {
-            background-color: #dc3545;
-        }
-
-        .clear-button:hover {
-            background-color: #c82333;
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
         @keyframes bounceIn {
-            0% {
-                transform: scale(0.95);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
         }
-
-        @keyframes appear {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .result p {
+            margin: 5px 0;
+            color: #333;
+            font-weight: bold;
+        }
+        .result p span {
+            color: #007bff;
+            font-weight: normal;
+        }
+        .box h3 {
+            font-size: 1.1rem;
+            color: #007bff;
+            margin-bottom: 10px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Amazon FBA & FBM Price Calculator</h1>
-
+        <h1>Amazon Price Calculator</h1>
         <label for="buyingPrice">Purchase Price (£):</label>
-        <input type="number" id="buyingPrice" step="0.01" placeholder="Enter purchase price" oninput="calculate()">
-
-        <div class="fees-container">
-            <div class="fba-fees">
-                <label for="fbaFees">FBA Fees (£):</label>
-                <input type="number" id="fbaFees" step="0.01" placeholder="Enter FBA fees" oninput="calculate()">
-            </div>
-            <div class="fbm-fees">
-                <label for="fbmFees">Prime Shipping Fees (£):</label>
-                <input type="number" id="fbmFees" step="0.01" placeholder="Enter Prime Shipping fees" oninput="calculate()">
-                <label for="nonPrimeFees">Non-Prime Shipping Fees (£):</label>
-                <input type="number" id="nonPrimeFees" step="0.01" placeholder="Enter Non-Prime Shipping fees" oninput="calculate()">
-            </div>
-        </div>
-
+        <input type="number" id="buyingPrice" step="0.01" placeholder="Enter purchase price">
+        <label for="fbaFees">FBA/Shipping Fees (£):</label>
+        <input type="number" id="fbaFees" step="0.01" placeholder="Enter FBA/Shipping fees">
         <label for="packagingCost">Packaging Cost (£):</label>
-        <input type="number" id="packagingCost" step="0.01" value="0.10" oninput="calculate()">
-
-        <div class="results-container">
-            <!-- Left Column -->
-            <div class="results-left">
-                <div class="box fba-results">
-                    <h3>FBA Results</h3>
-                    <p id="finalPriceFBA1"></p>
-                </div>
+        <input type="number" id="packagingCost" step="0.01" value="0.10">
+        <label for="requiredMargin">Required Margin (%):</label>
+        <input type="number" id="requiredMargin" step="0.01" value="10">
+        <div class="result">
+            <div class="box">
+                <h3>MarkUp Results</h3>
+                <p id="finalPriceFBA1_5"></p>
+                <p id="finalPriceFBA1_10"></p>
+                <p id="finalPriceFBA1_15"></p>
+                <p id="finalPriceFBA1_20"></p>
+                <p id="finalPriceFBA1_25"></p>
             </div>
-            <!-- Right Column -->
-            <div class="results-right">
-                <div class="box fbm-prime-results">
-                    <h3>FBM Results (Prime)</h3>
-                    <p id="finalPriceFBMPrime"></p>
-                </div>
-                <div class="box fbm-nonprime-results">
-                    <h3>FBM Results (Non-Prime)</h3>
-                    <p id="finalPriceFBMNonPrime"></p>
-                </div>
+            <div class="box">
+                <h3>Margin Results</h3>
+                <p id="sellingPrice"></p>
             </div>
         </div>
-
-        <button class="clear-button" id="clearButton" onclick="clearFields()">Clear All</button>
     </div>
-
     <script>
-        function calculateFinalPrice(baseCost, markup, additionalFees) {
-            return ((baseCost * markup) + additionalFees) / 0.683;
-        }
-
+        // Function to calculate and display results automatically
         function calculate() {
-            const buyingPrice = parseFloat(document.getElementById('buyingPrice').value);
+            const buyingPrice = parseFloat(document.getElementById('buyingPrice').value) || 0;
+            const fbaFees = parseFloat(document.getElementById('fbaFees').value) || 0;
             const packagingCost = parseFloat(document.getElementById('packagingCost').value) || 0;
-            const fbaFees = parseFloat(document.getElementById('fbaFees').value);
-            const primeFees = parseFloat(document.getElementById('fbmFees').value);
-            const nonPrimeFees = parseFloat(document.getElementById('nonPrimeFees').value);
+            const requiredMargin = parseFloat(document.getElementById('requiredMargin').value) || 10;
 
-            document.getElementById('finalPriceFBA1').innerHTML = '';
-            document.getElementById('finalPriceFBMPrime').innerHTML = '';
-            document.getElementById('finalPriceFBMNonPrime').innerHTML = '';
-
-            const baseCost = buyingPrice + packagingCost;
-
-            if (buyingPrice && fbaFees) {
-                document.getElementById('finalPriceFBA1').innerHTML = calculateMarkupResults(baseCost, fbaFees, buyingPrice);
+            // Check if both numbers are entered
+            if (buyingPrice === 0 || fbaFees === 0) {
+                // Do not display results if the inputs are incomplete
+                return;
             }
 
-            if (buyingPrice && primeFees) {
-                document.getElementById('finalPriceFBMPrime').innerHTML = calculateMarkupResults(baseCost, primeFees, buyingPrice);
+            // Function for MarkUp Results Calculation
+            function calculateFinalPrice(markup) {
+                return (((buyingPrice * markup) + fbaFees) / 0.683) + packagingCost;
             }
 
-            if (buyingPrice && nonPrimeFees) {
-                document.getElementById('finalPriceFBMNonPrime').innerHTML = calculateMarkupResults(baseCost, nonPrimeFees, buyingPrice);
+            // Profit Calculation (based on purchase price)
+            const profit5 = 0.05 * buyingPrice;       // 5% profit
+            const profit10 = 0.10 * buyingPrice;      // 10% profit
+            const profit15 = 0.15 * buyingPrice;      // 15% profit
+            const profit20 = 0.20 * buyingPrice;      // 20% profit
+            const profit25 = 0.25 * buyingPrice;      // 25% profit
+
+            // Display markup and profit in one line
+            document.getElementById('finalPriceFBA1_5').innerHTML = `SP (5%): <span>£${calculateFinalPrice(1.05).toFixed(2)}</span> - Profit: <span>£${profit5.toFixed(2)}</span>`;
+            document.getElementById('finalPriceFBA1_10').innerHTML = `SP (10%): <span>£${calculateFinalPrice(1.10).toFixed(2)}</span> - Profit: <span>£${profit10.toFixed(2)}</span>`;
+            document.getElementById('finalPriceFBA1_15').innerHTML = `SP (15%): <span>£${calculateFinalPrice(1.15).toFixed(2)}</span> - Profit: <span>£${profit15.toFixed(2)}</span>`;
+            document.getElementById('finalPriceFBA1_20').innerHTML = `SP (20%): <span>£${calculateFinalPrice(1.20).toFixed(2)}</span> - Profit: <span>£${profit20.toFixed(2)}</span>`;
+            document.getElementById('finalPriceFBA1_25').innerHTML = `SP (25%): <span>£${calculateFinalPrice(1.25).toFixed(2)}</span> - Profit: <span>£${profit25.toFixed(2)}</span>`;
+
+            // Selling Price Calculation based on Custom Margin
+            function calculateSellingPrice(margin) {
+                return ((buyingPrice + fbaFees) / (0.683 - (margin / 100))) + packagingCost;
             }
+
+            // Profit Calculation for Margin (based on selling price)
+            function calculateProfitFromSellingPrice(margin, sellingPrice) {
+                return margin * sellingPrice;
+            }
+            
+            const sellingPriceWithMargin = calculateSellingPrice(requiredMargin);
+            const profitWithMargin = calculateProfitFromSellingPrice(requiredMargin / 100, sellingPriceWithMargin);
+
+            document.getElementById('sellingPrice').innerHTML = `SP (${requiredMargin}%): <span>£${sellingPriceWithMargin.toFixed(2)}</span> - Profit: <span>£${profitWithMargin.toFixed(2)}</span>`;
         }
 
-   function calculateMarkupResults(baseCost, additionalFees, buyingPrice) {
-    const breakEven = calculateFinalPrice(baseCost, 1.0, additionalFees);
-    const markup5 = calculateFinalPrice(baseCost, 1.05, additionalFees);
-    const markup10 = calculateFinalPrice(baseCost, 1.10, additionalFees);
-    const markup15 = calculateFinalPrice(baseCost, 1.15, additionalFees);
-    const markup20 = calculateFinalPrice(baseCost, 1.20, additionalFees);
-
-    // Calculate profit for each case
-    const profitBreakEven = 0 * buyingPrice;  // No profit for break-even
-    const profit5 = 0.05 * buyingPrice;       // 5% profit
-    const profit10 = 0.10 * buyingPrice;      // 10% profit
-    const profit15 = 0.15 * buyingPrice;      // 15% profit
-    const profit20 = 0.20 * buyingPrice;      // 20% profit
-
-    return `
-        To Get Break-Even: £${breakEven.toFixed(2)} (Profit: £${profitBreakEven.toFixed(2)})<br>
-        To Make 5% Markup: £${markup5.toFixed(2)} (Profit: £${profit5.toFixed(2)})<br>
-        To Make 10% Markup: £${markup10.toFixed(2)} (Profit: £${profit10.toFixed(2)})<br>
-        To Make 15% Markup: £${markup15.toFixed(2)} (Profit: £${profit15.toFixed(2)})<br>
-        To Make 20% Markup: £${markup20.toFixed(2)} (Profit: £${profit20.toFixed(2)})
-    `;
-}
-
-        function clearFields() {
-            document.getElementById('buyingPrice').value = '';
-            document.getElementById('fbaFees').value = '';
-            document.getElementById('fbmFees').value = '';
-            document.getElementById('nonPrimeFees').value = '';
-            document.getElementById('packagingCost').value = '0.10';
-            document.getElementById('finalPriceFBA1').innerHTML = '';
-            document.getElementById('finalPriceFBMPrime').innerHTML = '';
-            document.getElementById('finalPriceFBMNonPrime').innerHTML = '';
-        }
+        // Attach the calculate function to input fields to trigger automatically
+        document.getElementById('buyingPrice').addEventListener('input', calculate);
+        document.getElementById('fbaFees').addEventListener('input', calculate);
+        document.getElementById('packagingCost').addEventListener('input', calculate);
+        document.getElementById('requiredMargin').addEventListener('input', calculate);
     </script>
 </body>
 </html>
