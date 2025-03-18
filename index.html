@@ -45,14 +45,25 @@
             color: #333;
             font-size: 1.1rem;
         }
+        .input-wrapper {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
         input {
-            width: calc(100% - 20px);
+            width: calc(100% - 20px);  /* Adjust width to make them fit half and half */
             padding: 12px;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 1rem;
             transition: border-color 0.3s ease;
         }
+div
+ {
+            width: calc(100% - 20px);  /* Adjust width to make them fit half and half */
+            
+        }
+
         input:focus {
             border-color: #007bff;
         }
@@ -70,7 +81,7 @@
             border-left: 5px solid #007bff;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             width: 45%;
-            font-size: 1rem; /* Reduced font size */
+            font-size: 1rem;
             animation: bounceIn 2s ease-out;
         }
         @keyframes bounceIn {
@@ -100,15 +111,25 @@
         <h1>Amazon Price Calculator</h1>
         <label for="buyingPrice">Purchase Price (£):</label>
         <input type="number" id="buyingPrice" step="0.01" placeholder="Enter purchase price">
-        <label for="fbaFees">FBA/Shipping Fees (£):</label>
-        <input type="number" id="fbaFees" step="0.01" placeholder="Enter FBA/Shipping fees">
+        
+        <div class="input-wrapper">
+            <div>
+                <label for="fbaFees">FBA Fees (£):</label>
+                <input type="number" id="fbaFees" step="0.01" placeholder="Enter FBA fees">
+            </div>
+            <div>
+                <label for="fbmShippingFees">FBM Shipping Fees (£):</label>
+                <input type="number" id="fbmShippingFees" step="0.01" placeholder="Enter FBM shipping fees">
+            </div>
+        </div>
+
         <label for="packagingCost">Packaging Cost (£):</label>
         <input type="number" id="packagingCost" step="0.01" value="0.10">
-        <label for="requiredMargin">Required Margin (%):</label>
-        <input type="number" id="requiredMargin" step="0.01" value="10">
+        
         <div class="result">
             <div class="box">
                 <h3>MarkUp Results</h3>
+                <p id="finalPriceFBA1_0"></p>
                 <p id="finalPriceFBA1_5"></p>
                 <p id="finalPriceFBA1_10"></p>
                 <p id="finalPriceFBA1_15"></p>
@@ -117,64 +138,98 @@
             </div>
             <div class="box">
                 <h3>Margin Results</h3>
-                <p id="sellingPrice"></p>
+                <p id="sellingPrice7"></p>
+                <p id="sellingPrice8"></p>
+                <p id="sellingPrice9"></p>
+                <p id="sellingPrice10"></p>
+                <p id="sellingPrice11"></p>
+                <p id="sellingPrice12"></p>
             </div>
         </div>
     </div>
     <script>
-        // Function to calculate and display results automatically
         function calculate() {
             const buyingPrice = parseFloat(document.getElementById('buyingPrice').value) || 0;
             const fbaFees = parseFloat(document.getElementById('fbaFees').value) || 0;
+            const fbmShippingFees = parseFloat(document.getElementById('fbmShippingFees').value) || 0;
             const packagingCost = parseFloat(document.getElementById('packagingCost').value) || 0;
-            const requiredMargin = parseFloat(document.getElementById('requiredMargin').value) || 10;
 
-            // Check if both numbers are entered
-            if (buyingPrice === 0 || fbaFees === 0) {
-                // Do not display results if the inputs are incomplete
-                return;
-            }
+            if (buyingPrice === 0 || fbaFees === 0) return;
 
-            // Function for MarkUp Results Calculation
+            // Function to calculate final price for markup
             function calculateFinalPrice(markup) {
-                return (((buyingPrice * markup) + fbaFees) / 0.683) + packagingCost;
+                let finalPrice = (((buyingPrice * markup) + fbaFees) / 0.683) + packagingCost;
+
+                // Add 2% of FBA Fees and 2% of 15% of the final price
+                const additionalCost = (0.02 * fbaFees) + (0.02 * (finalPrice * 0.15));
+
+                // Return the final price after including the additional cost
+                return finalPrice + additionalCost;
             }
 
-            // Profit Calculation (based on purchase price)
-            const profit5 = 0.05 * buyingPrice;       // 5% profit
-            const profit10 = 0.10 * buyingPrice;      // 10% profit
-            const profit15 = 0.15 * buyingPrice;      // 15% profit
-            const profit20 = 0.20 * buyingPrice;      // 20% profit
-            const profit25 = 0.25 * buyingPrice;      // 25% profit
+            // Function to add markup profit (this is added only to the markup)
+            function addMarkupProfit(markupPercentage) {
+                const markupProfit = markupPercentage * buyingPrice; // Calculate markup profit
+                const finalPrice = calculateFinalPrice(1 + markupPercentage);
+                return {
+                    finalPrice: finalPrice.toFixed(2),
+                    markupProfit: markupProfit.toFixed(2)
+                };
+            }
 
-            // Display markup and profit in one line
-            document.getElementById('finalPriceFBA1_5').innerHTML = `SP (5%): <span>£${calculateFinalPrice(1.05).toFixed(2)}</span> - Profit: <span>£${profit5.toFixed(2)}</span>`;
-            document.getElementById('finalPriceFBA1_10').innerHTML = `SP (10%): <span>£${calculateFinalPrice(1.10).toFixed(2)}</span> - Profit: <span>£${profit10.toFixed(2)}</span>`;
-            document.getElementById('finalPriceFBA1_15').innerHTML = `SP (15%): <span>£${calculateFinalPrice(1.15).toFixed(2)}</span> - Profit: <span>£${profit15.toFixed(2)}</span>`;
-            document.getElementById('finalPriceFBA1_20').innerHTML = `SP (20%): <span>£${calculateFinalPrice(1.20).toFixed(2)}</span> - Profit: <span>£${profit20.toFixed(2)}</span>`;
-            document.getElementById('finalPriceFBA1_25').innerHTML = `SP (25%): <span>£${calculateFinalPrice(1.25).toFixed(2)}</span> - Profit: <span>£${profit25.toFixed(2)}</span>`;
+            // Break-even calculation (no markup, profit is zero)
+            let breakEvenPrice = (((buyingPrice + fbaFees) / 0.683) + packagingCost).toFixed(2);
 
-            // Selling Price Calculation based on Custom Margin
+            // Add 2% of FBA Fees and 2% of 15% of the break-even price
+            const additionalCost = (0.02 * fbaFees) + (0.02 * (breakEvenPrice * 0.15));
+            breakEvenPrice = (parseFloat(breakEvenPrice) + additionalCost).toFixed(2);
+
+            document.getElementById('finalPriceFBA1_0').innerHTML = `Break Even: £${breakEvenPrice}`;
+
+            // Calculate for 5% markup
+            const fivePercent = addMarkupProfit(0.05);
+            document.getElementById('finalPriceFBA1_5').innerHTML = `SP (5%): £${fivePercent.finalPrice} - Profit £${fivePercent.markupProfit}`;
+
+            // Calculate for 10% markup
+            const tenPercent = addMarkupProfit(0.10);
+            document.getElementById('finalPriceFBA1_10').innerHTML = `SP (10%): £${tenPercent.finalPrice} - Profit £${tenPercent.markupProfit}`;
+
+            // Calculate for 15% markup
+            const fifteenPercent = addMarkupProfit(0.15);
+            document.getElementById('finalPriceFBA1_15').innerHTML = `SP (15%): £${fifteenPercent.finalPrice} - Profit £${fifteenPercent.markupProfit}`;
+
+            // Calculate for 20% markup
+            const twentyPercent = addMarkupProfit(0.20);
+            document.getElementById('finalPriceFBA1_20').innerHTML = `SP (20%): £${twentyPercent.finalPrice} - Profit £${twentyPercent.markupProfit}`;
+
+            // Calculate for 25% markup
+            const twentyFivePercent = addMarkupProfit(0.25);
+            document.getElementById('finalPriceFBA1_25').innerHTML = `SP (25%): £${twentyFivePercent.finalPrice} - Profit £${twentyFivePercent.markupProfit}`;
+
+            // Function to calculate selling price with margin
             function calculateSellingPrice(margin) {
-                return ((buyingPrice + fbaFees) / (0.683 - (margin / 100))) + packagingCost;
+                let sellingPrice = ((buyingPrice + fbaFees) / (0.683 - (margin / 100))) + packagingCost;
+
+                // Add 2% of FBA Fees and 2% of 15% of the selling price
+                const additionalCost = (0.02 * fbaFees) + (0.02 * (sellingPrice * 0.15));
+
+                // Return the selling price after including the additional cost
+                return sellingPrice + additionalCost;
             }
 
-            // Profit Calculation for Margin (based on selling price)
-            function calculateProfitFromSellingPrice(margin, sellingPrice) {
-                return margin * sellingPrice;
-            }
-            
-            const sellingPriceWithMargin = calculateSellingPrice(requiredMargin);
-            const profitWithMargin = calculateProfitFromSellingPrice(requiredMargin / 100, sellingPriceWithMargin);
-
-            document.getElementById('sellingPrice').innerHTML = `SP (${requiredMargin}%): <span>£${sellingPriceWithMargin.toFixed(2)}</span> - Profit: <span>£${profitWithMargin.toFixed(2)}</span>`;
+            // Calculate selling prices for margin percentages and show the result
+            document.getElementById('sellingPrice7').innerHTML = `SP (7% Margin): £${calculateSellingPrice(7).toFixed(2)} - Profit £${(7 * calculateSellingPrice(7) / 100).toFixed(2)}`;
+            document.getElementById('sellingPrice8').innerHTML = `SP (8% Margin): £${calculateSellingPrice(8).toFixed(2)} - Profit £${(8 * calculateSellingPrice(8) / 100).toFixed(2)}`;
+            document.getElementById('sellingPrice9').innerHTML = `SP (9% Margin): £${calculateSellingPrice(9).toFixed(2)} - Profit £${(9 * calculateSellingPrice(9) / 100).toFixed(2)}`;
+            document.getElementById('sellingPrice10').innerHTML = `SP (10% Margin): £${calculateSellingPrice(10).toFixed(2)} - Profit £${(10 * calculateSellingPrice(10) / 100).toFixed(2)}`;
+            document.getElementById('sellingPrice11').innerHTML = `SP (11% Margin): £${calculateSellingPrice(11).toFixed(2)} - Profit £${(11 * calculateSellingPrice(11) / 100).toFixed(2)}`;
+            document.getElementById('sellingPrice12').innerHTML = `SP (12% Margin): £${calculateSellingPrice(12).toFixed(2)} - Profit £${(12 * calculateSellingPrice(12) / 100).toFixed(2)}`;
         }
 
-        // Attach the calculate function to input fields to trigger automatically
         document.getElementById('buyingPrice').addEventListener('input', calculate);
         document.getElementById('fbaFees').addEventListener('input', calculate);
+        document.getElementById('fbmShippingFees').addEventListener('input', calculate);
         document.getElementById('packagingCost').addEventListener('input', calculate);
-        document.getElementById('requiredMargin').addEventListener('input', calculate);
     </script>
 </body>
 </html>
